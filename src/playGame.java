@@ -59,7 +59,7 @@ public class playGame implements ActionListener
         Iterator<Integer> genIt =  generator.iterator();
 
         CellButton tempCell = (CellButton)ev.getSource();
-        if(tempCell.getColumn() == colForNull + 1 || colForNull - 1)
+
 
 
     }
