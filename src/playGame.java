@@ -5,28 +5,27 @@ import java.awt.*;
 import java.util.Iterator;
 import javax.swing.*;
 
-public class playGame implements ActionListener
-{
+public class playGame implements ActionListener {
     GameGenerator generator;
     JFrame game;
+    CellButton[] button = new CellButton[20];
+
     public int posForNull;
     public int rowForNull;
     public int colForNull;
 
-    public playGame(int gameSize)
-    {
+    public playGame(int gameSize) {
 
         makeFrame(gameSize);
     }
+
     /**
      * makeFrame create a Jframe with the right amount of buttons
      *
      * @param gameSize puts the game size for the game:
      *                 example 4 if playfield is 16(4x4)
-     *
      */
-    public void makeFrame( int gameSize)
-    {
+    public void makeFrame(int gameSize) {
         generator = new GameGenerator(gameSize);
         game = new JFrame("The 15 game");
         game.setLayout(new GridLayout(gameSize, gameSize, 3, 3));
@@ -35,31 +34,31 @@ public class playGame implements ActionListener
 
         for (int i : generator)
         {
-            if(i == 0) // Save "null" buttons position
+            if (i == 0) // Save "null" buttons position and Column/Row
             {
                 posForNull = pos;
                 colForNull = pos % 4;
-                if (colForNull == 0)
-                {
+                if (colForNull == 0) {
                     colForNull = 4;
                 }
                 rowForNull = pos / 4;
                 rowForNull = rowForNull + 1;
-                if (pos % 4 == 0)
-                {
-                    rowForNull = pos/ 4;
+                if (pos % 4 == 0) {
+                    rowForNull = pos / 4;
                 }
 
             }
-            CellButton button = new CellButton(i, pos);
-            button.addCellButton(game);
+            button[pos] = new CellButton(i, pos);
+            game.getContentPane().add(button[pos]);
             pos++;
         }
 
         game.setVisible(true);
-        game.addWindowListener(new WindowAdapter()
-        { public void windowClosing(WindowEvent e)
-        { System.exit(0); }
+
+        game.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
         });
     }
 
@@ -68,46 +67,43 @@ public class playGame implements ActionListener
      *
      * @param cell  Cell nr 1
      * @param cell2 Cell nr 2
-     *
      */
-    public void swapCellButton(CellButton cell,CellButton cell2)
-    {
+    public void swapCellButton(CellButton cell, CellButton cell2) {
         CellButton temp = cell;
         cell.setText(cell2.getText());
         cell2.setText(temp.getText());
         //Save NULL button position
-        if(cell.getText().equals("")) // sätter colForNull och rowForNull efter cells värden
+        if (cell.getText().equals("")) // sätter colForNull och rowForNull efter cells värden
         {
+            posForNull = cell.getPosition();
             colForNull = cell.getColumn();
             rowForNull = cell.getRow();
-        }
-        else    // sätter colForNull och rowForNull efter cell2s värden
+        } else    // sätter colForNull och rowForNull efter cell2s värden
         {
+            posForNull = cell2.getPosition();
             colForNull = cell2.getColumn();
             rowForNull = cell2.getRow();
         }
     }
-    /*
-    public CellButton NullButtonSearch()
-    {
-        Iterator<Integer> genIt =  generator.iterator();
 
-    }*/
-
-    public void actionPerformed(ActionEvent ev)
-    {
+   public void actionPerformed(ActionEvent ev) {
 
 
-        CellButton tempCell = (CellButton)ev.getSource();
-        if(((tempCell.getColumn() == colForNull + 1) || (tempCell.getColumn() == colForNull -1)) && (tempCell.getRow() == rowForNull) )
+        CellButton tempCell = (CellButton) ev.getSource();
+        int posForPressed = tempCell.getPosition();
+
+        if (((button[posForPressed].getColumn() == colForNull + 1) || (button[posForPressed].getColumn() == colForNull - 1)) && (button[posForPressed].getRow() == rowForNull))
         {
-            swapCellButton(tempCell,tempCell); // byt sista tempcell till NULL button
+            swapCellButton(button[posForPressed], button[posForNull]); // byter trycktknapp och nullbuttons texter
         }
-        else if(((tempCell.getRow() == rowForNull + 1)|| (tempCell.getRow() == rowForNull -1)) && (tempCell.getColumn() == colForNull))
+        else if (((button[posForPressed].getRow() == rowForNull + 1) || (button[posForPressed].getRow() == rowForNull - 1)) && (button[posForPressed].getColumn() == colForNull))
         {
-            swapCellButton(tempCell,tempCell); // byt sista tempcell till NULL button
+            swapCellButton(button[posForPressed], button[posForNull]); // byter tycktknapp och nullbuttons texter
         }
         else
-        {
+            {
             Toolkit.getDefaultToolkit().beep();
         }
+    }
+}
+

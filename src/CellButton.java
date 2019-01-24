@@ -4,10 +4,11 @@ import javax.swing.*;
 
 public class CellButton extends JButton
 {
-    int column,row;
+    int column,row,position;
 
     public CellButton(int number,int position)
     {
+        this.position = position;
         column = position % 4;
         if (column == 0)
         {
@@ -20,7 +21,6 @@ public class CellButton extends JButton
             row = position/ 4;
         }
 
-
         if(number == 0)
         {
             setText("" );
@@ -29,17 +29,8 @@ public class CellButton extends JButton
         {
             setText(String.valueOf(number));
         }
-
-
-
     }
 
-
-    public void addCellButton(JFrame frame)
-    {
-        frame.getContentPane().add(this);
-
-    }
 
     public int getRow()
     {
@@ -49,14 +40,11 @@ public class CellButton extends JButton
     {
         return column;
     }
-
-    public void setValue(int value)
+    public int getPosition()
     {
-        if( value == 0)
-        {
-            setText("");
-        }
-        else
-        setText(String.valueOf(value));
+        return position;
     }
+
+
+
 }
