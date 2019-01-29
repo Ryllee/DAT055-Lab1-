@@ -4,27 +4,21 @@ import javax.swing.*;
 
 public class CellButton extends JButton
 {
-    int column,row,position,number;
+    private int column,row,position,number;
 
-    public CellButton(int number,int position)
+    public CellButton(int number,int position, int gameSize)
     {
         this.position = position;
         this.number = number;
-        column = position % 4;
-        row = position / 4;
-        row = row + 1;
-        if (position % 4 == 0)
-        {
-            row = position/ 4;
-        }
-
+        row = position/gameSize + 1;
+        column = position%gameSize + 1;
         if(number == 0)
         {
             setText("");
         }
         else
         {
-            setText(String.valueOf(number)+ "," + String.valueOf(column) + "," + String.valueOf((row)));
+            setText(String.valueOf(number));
         }
     }
 

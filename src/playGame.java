@@ -1,4 +1,4 @@
-import javafx.scene.control.Cell;
+
 
 import java.awt.event.*;
 import java.awt.*;
@@ -14,11 +14,12 @@ public class playGame implements ActionListener {
     public int posForNull;
     public int rowForNull;
     public int colForNull;
+    public int gameSize;
 
     public playGame(int gameSize) {
         list = new ArrayList<>();
         makeFrame(gameSize);
-
+        this.gameSize = gameSize;
     }
 
     /**
@@ -36,24 +37,14 @@ public class playGame implements ActionListener {
 
         for (int i : generator)
         {
-            if (i == 0) // Save "null" buttons position and Column/Row
-            {
-                posForNull = pos;
-                colForNull = pos % 4;
-                if (colForNull == 0) {
-                    colForNull = 4;
-                }
-                rowForNull = pos / 4;
-                rowForNull = rowForNull + 1;
-                if (pos % 4 == 0) {
-                    rowForNull = pos / 4;
-                }
 
-            }
-            list.add(pos,new CellButton(i, pos));
+            list.add(pos,new CellButton(i, pos,gameSize));
             list.get(pos).addActionListener(this);
             game.getContentPane().add(list.get(pos));
-
+            if (i == 0) // Save "null" buttons position and Column/Row
+            {
+                setNullvalues(list.get(pos));
+            }
             pos++;
         }
 
@@ -75,42 +66,69 @@ public class playGame implements ActionListener {
     public void swapCellButton(CellButton cell, CellButton cell2)
     {
         int temp = cell.getNumber();
-        System.out.println("test2");
         cell.setNumber(cell2.getNumber());
-        System.out.println("test3");
         cell2.setNumber(temp);
         //Save NULL button position
         if (cell.getNumber() == 0) // sätter colForNull och rowForNull efter cells värden
         {
-            posForNull = cell.getPosition();
-            colForNull = cell.getColumn();
-            rowForNull = cell.getRow();
+           setNullvalues(cell);
         }
         else    // sätter colForNull och rowForNull efter cell2s värden
         {
-            posForNull = cell2.getPosition();
-            colForNull = cell2.getColumn();
-            rowForNull = cell2.getRow();
+            setNullvalues(cell2);
         }
         relabel(cell);
         relabel(cell2);
-        System.out.println("test4");
     }
 
+    /**
+     * relabel
+     * Used to update the number on a specific cell(button)
+     *
+     * @param cell specify the specific cell
+     */
     public void relabel(CellButton cell)
     {
         if(cell.getNumber() == 0)
         {
-            System.out.println("test1");
             cell.setText("");
         }
         else
         {
-            System.out.println("test");
             cell.setText(String.valueOf(cell.getNumber()));
         }
     }
 
+    /**
+     * setNullvalues
+     * puts a cell(button) information in three ints,
+     * position -> posForNull
+     * column -> colForNull
+     * row -> rowForNull
+     * @param cell specify the "Null" cell that should have its values saved.
+     */
+    public void setNullvalues(CellButton cell)
+    {
+        posForNull = cell.getPosition();
+        colForNull = cell.getColumn();
+        rowForNull = cell.getRow();
+    }
+
+    public void numRightorder()
+    {
+
+        for (int i = 0; i > (gameSize * gameSize); i++)
+        {
+            if(i == 0){}
+            else if(list.get(i).getNumber() > list.get(i-1).getNumber())
+            {
+                break;
+            }
+
+        }
+        System.out.println("Du vann");
+
+    }
    public void actionPerformed(ActionEvent ev) {
 
 
@@ -120,15 +138,18 @@ public class playGame implements ActionListener {
         if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && (tempCell.getRow() == rowForNull))
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter trycktknapp och nullbuttons texter
+            System.out.println("1");
         }
         else if (((tempCell.getRow() == (rowForNull + 1)) || (tempCell.getRow() == (rowForNull - 1)) && (tempCell.getColumn() == colForNull)))
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter tycktknapp och nullbuttons texter
+            System.out.println("2");
         }
         else
-            {
+        {
             Toolkit.getDefaultToolkit().beep();
         }
+        numRightorder();
     }
 }
 
