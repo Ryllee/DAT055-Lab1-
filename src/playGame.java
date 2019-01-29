@@ -114,20 +114,20 @@ public class playGame implements ActionListener {
         rowForNull = cell.getRow();
     }
 
-    public void numRightorder()
+    public boolean numRightorder()
     {
+        boolean rightOrder = true;
+        int lastnum = 0;
 
-        for (int i = 0; i > (gameSize * gameSize); i++)
-        {
-            if(i == 0){}
-            else if(list.get(i).getNumber() > list.get(i-1).getNumber())
-            {
-                break;
-            }
-
-        }
-        System.out.println("Du vann");
-
+      for (CellButton cell : list)
+      {
+          if(lastnum > cell.getNumber())
+          {
+              rightOrder = false;
+          }
+          lastnum = cell.getNumber();
+      }
+      return rightOrder;
     }
    public void actionPerformed(ActionEvent ev) {
 
@@ -135,12 +135,12 @@ public class playGame implements ActionListener {
         CellButton tempCell = (CellButton)ev.getSource();
 
 
-        if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && (tempCell.getRow() == rowForNull))
+        if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && tempCell.getRow() == rowForNull)
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter trycktknapp och nullbuttons texter
             System.out.println("1");
         }
-        else if (((tempCell.getRow() == (rowForNull + 1)) || (tempCell.getRow() == (rowForNull - 1)) && (tempCell.getColumn() == colForNull)))
+        else if ((tempCell.getRow() == (rowForNull + 1) || tempCell.getRow() == (rowForNull - 1)) && tempCell.getColumn() == colForNull)
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter tycktknapp och nullbuttons texter
             System.out.println("2");
@@ -149,7 +149,10 @@ public class playGame implements ActionListener {
         {
             Toolkit.getDefaultToolkit().beep();
         }
-        numRightorder();
+        if(numRightorder() == true)
+        {
+            System.out.println("Du vann");
+        }
     }
 }
 
