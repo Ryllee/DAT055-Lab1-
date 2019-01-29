@@ -2,21 +2,23 @@ import javafx.scene.control.Cell;
 
 import java.awt.event.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.*;
 
 public class playGame implements ActionListener {
     GameGenerator generator;
     JFrame game;
-    CellButton[] button = new CellButton[20];
+    ArrayList<CellButton> list;
 
     public int posForNull;
     public int rowForNull;
     public int colForNull;
 
     public playGame(int gameSize) {
-
+        list = new ArrayList<>();
         makeFrame(gameSize);
+
     }
 
     /**
@@ -30,7 +32,7 @@ public class playGame implements ActionListener {
         game = new JFrame("The 15 game");
         game.setLayout(new GridLayout(gameSize, gameSize, 3, 3));
         game.setSize(400, 400);
-        int pos = 1;
+        int pos = 0;
 
         for (int i : generator)
         {
@@ -48,8 +50,10 @@ public class playGame implements ActionListener {
                 }
 
             }
-            button[pos] = new CellButton(i, pos);
-            game.getContentPane().add(button[pos]);
+            list.add(pos,new CellButton(i, pos));
+            list.get(pos).addActionListener(this);
+            game.getContentPane().add(list.get(pos));
+
             pos++;
         }
 
@@ -68,37 +72,58 @@ public class playGame implements ActionListener {
      * @param cell  Cell nr 1
      * @param cell2 Cell nr 2
      */
-    public void swapCellButton(CellButton cell, CellButton cell2) {
-        CellButton temp = cell;
-        cell.setText(cell2.getText());
-        cell2.setText(temp.getText());
+    public void swapCellButton(CellButton cell, CellButton cell2)
+    {
+        int temp = cell.getNumber();
+        System.out.println("test2");
+        cell.setNumber(cell2.getNumber());
+        System.out.println("test3");
+        cell2.setNumber(temp);
         //Save NULL button position
-        if (cell.getText().equals("")) // sätter colForNull och rowForNull efter cells värden
+        if (cell.getNumber() == 0) // sätter colForNull och rowForNull efter cells värden
         {
             posForNull = cell.getPosition();
             colForNull = cell.getColumn();
             rowForNull = cell.getRow();
-        } else    // sätter colForNull och rowForNull efter cell2s värden
+        }
+        else    // sätter colForNull och rowForNull efter cell2s värden
         {
             posForNull = cell2.getPosition();
             colForNull = cell2.getColumn();
             rowForNull = cell2.getRow();
+        }
+        relabel(cell);
+        relabel(cell2);
+        System.out.println("test4");
+    }
+
+    public void relabel(CellButton cell)
+    {
+        if(cell.getNumber() == 0)
+        {
+            System.out.println("test1");
+            cell.setText("");
+        }
+        else
+        {
+            System.out.println("test");
+            cell.setText(String.valueOf(cell.getNumber()));
         }
     }
 
    public void actionPerformed(ActionEvent ev) {
 
 
-        CellButton tempCell = (CellButton) ev.getSource();
-        int posForPressed = tempCell.getPosition();
+        CellButton tempCell = (CellButton)ev.getSource();
 
-        if (((button[posForPressed].getColumn() == colForNull + 1) || (button[posForPressed].getColumn() == colForNull - 1)) && (button[posForPressed].getRow() == rowForNull))
+
+        if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && (tempCell.getRow() == rowForNull))
         {
-            swapCellButton(button[posForPressed], button[posForNull]); // byter trycktknapp och nullbuttons texter
+            swapCellButton(tempCell, list.get(posForNull)); // byter trycktknapp och nullbuttons texter
         }
-        else if (((button[posForPressed].getRow() == rowForNull + 1) || (button[posForPressed].getRow() == rowForNull - 1)) && (button[posForPressed].getColumn() == colForNull))
+        else if (((tempCell.getRow() == (rowForNull + 1)) || (tempCell.getRow() == (rowForNull - 1)) && (tempCell.getColumn() == colForNull)))
         {
-            swapCellButton(button[posForPressed], button[posForNull]); // byter tycktknapp och nullbuttons texter
+            swapCellButton(tempCell, list.get(posForNull)); // byter tycktknapp och nullbuttons texter
         }
         else
             {
