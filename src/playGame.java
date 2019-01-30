@@ -15,6 +15,7 @@ public class playGame implements ActionListener {
     public int rowForNull;
     public int colForNull;
     public int gameSize;
+    public int howmanymoves = 0;
 
     public playGame(int gameSize) {
         list = new ArrayList<>();
@@ -116,16 +117,27 @@ public class playGame implements ActionListener {
 
     public boolean numRightorder()
     {
-        boolean rightOrder = true;
+        boolean rightOrder = false;
         int lastnum = 0;
 
       for (CellButton cell : list)
       {
-          if(lastnum > cell.getNumber())
+          if(lastnum < cell.getNumber() && cell.getNumber() != 0)
+          {
+              rightOrder = true;
+              lastnum = cell.getNumber();
+          }
+          else if (cell.getNumber() == 0 && cell.getPosition() == ((gameSize * gameSize)-1))
+          {
+              rightOrder = true;
+          }
+          else
           {
               rightOrder = false;
+              break;
           }
-          lastnum = cell.getNumber();
+
+
       }
       return rightOrder;
     }
@@ -138,20 +150,19 @@ public class playGame implements ActionListener {
         if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && tempCell.getRow() == rowForNull)
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter trycktknapp och nullbuttons texter
-            System.out.println("1");
         }
         else if ((tempCell.getRow() == (rowForNull + 1) || tempCell.getRow() == (rowForNull - 1)) && tempCell.getColumn() == colForNull)
         {
             swapCellButton(tempCell, list.get(posForNull)); // byter tycktknapp och nullbuttons texter
-            System.out.println("2");
         }
         else
         {
             Toolkit.getDefaultToolkit().beep();
         }
+        howmanymoves ++;
         if(numRightorder() == true)
         {
-            System.out.println("Du vann");
+            JOptionPane.showMessageDialog(game,"You made " + howmanymoves + " moves to win");
         }
     }
 }
