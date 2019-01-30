@@ -3,7 +3,6 @@
 import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.*;
 
 public class playGame implements ActionListener {
@@ -115,11 +114,15 @@ public class playGame implements ActionListener {
         rowForNull = cell.getRow();
     }
 
+    /**
+     * numRightorder checks if all the numbers in the cells on the playfield is
+     * in the right order. From 1 -> highest number
+     * @return true if all the numbers are in the right order else returns false
+     */
     public boolean numRightorder()
     {
         boolean rightOrder = false;
         int lastnum = 0;
-
       for (CellButton cell : list)
       {
           if(lastnum < cell.getNumber() && cell.getNumber() != 0)
@@ -136,16 +139,14 @@ public class playGame implements ActionListener {
               rightOrder = false;
               break;
           }
-
-
       }
       return rightOrder;
     }
-   public void actionPerformed(ActionEvent ev) {
 
+    public void actionPerformed(ActionEvent ev)
+    {
 
         CellButton tempCell = (CellButton)ev.getSource();
-
 
         if (((tempCell.getColumn()== (colForNull + 1)) || (tempCell.getColumn() == (colForNull - 1))) && tempCell.getRow() == rowForNull)
         {
